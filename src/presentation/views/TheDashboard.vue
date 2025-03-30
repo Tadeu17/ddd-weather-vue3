@@ -49,8 +49,13 @@ const errorMessage = ref<string | null>(null);
 const fetchLocations = async () => {
   try {
     const result = await getLocations();
-    locations.value = result;
-    selectedLocation.value = result[0] || null; // Default to the first location if available
+
+    if (result) {
+      locations.value = result;
+      selectedLocation.value = result[0] || null; // Default to the first location if available
+    } else {
+      throw Error('No locations were found')
+    }
   } catch (err) {
     console.error("Error fetching locations:", err);
     errorMessage.value = "Failed to load locations. Please try again later.";
@@ -78,8 +83,7 @@ const fetchWeather = async () => {
     weather.value = result;
   } catch (err) {
     console.error("Error fetching weather:", err);
-    errorMessage.value =
-      (err as Error).message || "An unexpected error occurred while fetching weather.";
+    errorMessage.value = "An unexpected error occurred while fetching weather.";
   } finally {
     isLoading.value = false;
   }
