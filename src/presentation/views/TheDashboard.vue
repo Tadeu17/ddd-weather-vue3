@@ -3,10 +3,10 @@
     <h2 class="text-2xl font-semibold text-gray-700 mb-4">Weather Dashboard</h2>
 
     <label for="location-select" class="sr-only">Select a location</label>
-    <div class="flex gap-2 mb-4">
+    <div class="h-16 flex gap-2 mb-4">
       <select id="location-select" v-model="selectedLocation"
         class="p-2 border rounded w-full focus:ring-2 focus:ring-blue-500" aria-labelledby="location-label">
-        <option v-for="location in HARDCODED_LOCATIONS" :key="location.id" :value="location">
+        <option v-for="location in locations" :key="location.id" :value="location">
           {{ location.name }} ({{ location.country }})
         </option>
       </select>
@@ -27,33 +27,62 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
-import WeatherCard from "@/presentation/components/WeatherCard.vue";
-import { HARDCODED_LOCATIONS, type Location } from "@/domain/entities/Location";
+import { ref, onBeforeMount } from "vue";
+
+// types
 import type { Weather } from "@/domain/entities/Weather";
+import type { Location } from "@/domain/entities/Location";
 
-const selectedLocation = ref<Location | null>(HARDCODED_LOCATIONS[0]);
+// components
+import WeatherCard from "@/presentation/components/WeatherCard.vue";
+
+// logic
+import { WeatherRepository } from "@/infrastructure/repositories/WeatherRepository"; // Import repository
+import { LocationRepository } from "@/infrastructure/repositories/LocationRepository"; // Import repository
+
+const locations = ref<Location[]>([]);
+const selectedLocation = ref<Location | null>(null);
 const weather = ref<Weather | null>(null);
-const isLoading = ref<boolean>(false)
-const error = ref<Error | null>(null)
+const isLoading = ref<boolean>(false);
+const error = ref<string | null>(null);
 
-const fetchWeather = () => {
+const fetchLocations = async () => {
+  try {
+    const result = await LocationRepository.fetchLocations();
+    locations.value = result;
+    selectedLocation.value = result[0] || null; // Default to the first location if available
+  } catch (err) {
+    console.error("Error fetching locations:", err);
+    error.value = "Failed to load locations. Please try again later.";
+  }
+};
+
+const fetchWeather = async () => {
+  weather.value = null
+
   if (!selectedLocation.value) {
-    error.value = new Error('No location selected');
+    error.value = "No location selected.";
     return;
   }
 
-  isLoading.value = true
+  isLoading.value = true;
+  error.value = null;
 
-  weather.value = {
-    location: selectedLocation.value,
-    temperature: Math.floor(Math.random() * 30),
-    humidity: Math.floor(Math.random() * 100),
-    windSpeed: Number((Math.random() * 10).toFixed(1)),
-    description: "Partly Cloudy",
-    date: new Date(),
-  };
+  try {
+    const result = await WeatherRepository.fetchCurrentWeather(selectedLocation.value);
 
-  isLoading.value = false
+    if (!result) {
+      throw new Error("No weather data available for this location.");
+    }
+
+    weather.value = result;
+  } catch (err) {
+    console.error("Error fetching weather:", err);
+    error.value = (err as Error).message || "An unexpected error occurred.";
+  } finally {
+    isLoading.value = false;
+  }
 };
+
+onBeforeMount(fetchLocations);
 </script>
