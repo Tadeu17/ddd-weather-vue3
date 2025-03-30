@@ -45,7 +45,7 @@ For the intended exercise, we can consider a structure similar to the following:
       - `WeatherApiRepository.ts`
     - **api**
       - `OpenMeteoClient.ts`
-  - **display**
+  - **presentation**
     - **components**
       - `WeatherCard.vue`
     - **views**
@@ -85,3 +85,19 @@ Key challenges with Domain-Driven Design (DDD):
 4. **_Overhead for Simple Projects_**: DDD is overkill for small-scale or CRUD-heavy applications. The upfront cost of defining layers and ubiquitous language may outweigh the benefits.
 
 5. **_Organizational Alignment_**: DDD requires collaboration between developers, domain experts, and stakeholders. Without buy-in or clear communication, misalignment can derail the design.
+
+## Developement and decisions
+
+For starters, we're using vite for it's light speed, and for simplicity and to better allow responsiveness of CSS we're using tailwindCSS.
+We are using brave as the development browser, and not focusing on testing multi browser although as the code should be simple this should behave well in different browsers.
+We are not considering internationalization here. It is a very simple feature to add but in terms of priorities it doesn't take the top spot. Also, considering the small presentation layer code, we can later on add if we want to as it will not have an impact in an hipothetic roadmap.
+
+Decided to go with a pre determined list of locations to explore.
+
+Also, considered some properties for now such as temperature, humidity and wind speed.
+
+We're starting by defining the presentation layer and then we'll progressively implement the other layers. Presentation layer already depends on domain though, so we'll already add some entities.
+
+For entities, we can immediately recognize Weather and Location as the 2 main ingredients for the purpose of the exercise.
+
+As for the presentation, we'll have to use types obviously. In case of WeatherCard we need to type the properties. As this is a simple app, I'd usually leave the type inside the component itself, as the code doesn't get cluttered. However, as the app grows, it is a good practice to keep the types in a separate file, adjacent to the component, with the extension .types.ts
