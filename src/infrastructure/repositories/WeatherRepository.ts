@@ -2,6 +2,8 @@ import type { Weather } from "@/domain/entities/Weather";
 import type { Location } from "@/domain/entities/Location";
 import { LocationRepository } from "./LocationRepository";
 
+import { fetchCurrentWeather as fetchOpenMeteoCurrentWeather } from '@/infrastructure/api/OpenMeteo';
+
 const HARDCODED_WEATHER_DATA: Weather[] = [
   {
     location: LocationRepository.getLocationById('lisbon')!,
@@ -23,13 +25,17 @@ const HARDCODED_WEATHER_DATA: Weather[] = [
 
 export const WeatherRepository = {
   async fetchCurrentWeather(location: Location): Promise<Weather | null> {
-    await new Promise((resolve) => setTimeout(resolve, 500));
-
-    return HARDCODED_WEATHER_DATA.find((weather) => weather.location.id === location.id) || null;
+    try {
+      return await fetchOpenMeteoCurrentWeather(location);
+    } catch (error) {
+      console.error('WeatherRepository error:', error);
+      return null;
+    }
   },
 
   async fetchHistoricalWeather(location: Location, dateStart: Date, dateEnd: Date): Promise<Weather | null> {
     await new Promise((resolve) => setTimeout(resolve, 500));
+
 
     return HARDCODED_WEATHER_DATA.find((weather) => weather.location.id === location.id) || null;
   },
