@@ -92,7 +92,7 @@ For starters, we're using vite for it's light speed, and for simplicity and to b
 We are using brave as the development browser, and not focusing on testing multi browser although as the code should be simple this should behave well in different browsers.
 We are not considering internationalization here. It is a very simple feature to add but in terms of priorities it doesn't take the top spot. Also, considering the small presentation layer code, we can later on add if we want to as it will not have an impact in an hipothetic roadmap.
 
-Decided to go with a pre determined list of locations to explore.
+Decided to go with a pre determined list of locations to explore and in terms of historical weather, the last 7 days.
 
 Also, considered some properties for now such as temperature, humidity and wind speed.
 

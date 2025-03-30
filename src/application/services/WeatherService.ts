@@ -11,8 +11,11 @@ export const getCurrentWeather = async (location: Location): Promise<Weather | n
   }
 };
 
-export const getHistoricalWeather = async (location: Location, dateStart: Date, dateEnd: Date): Promise<Weather | null> => {
+export const getHistoricalWeather = async (location: Location, dateEnd: Date): Promise<Weather | null> => {
   try {
+    const dateStart = new Date(dateEnd);
+    dateStart.setDate(dateEnd.getDate() - 7);
+
     return await WeatherRepository.fetchHistoricalWeather(location, dateStart, dateEnd);
   } catch (error) {
     console.error("Error fetching historical weather:", error);
