@@ -13,9 +13,13 @@
 
       <button @click="fetchWeather"
         class="bg-blue-500 text-white px-4 py-2 rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
-        aria-label="Fetch weather data">
-        Get Weather
+        :disabled="isLoading" aria-label="Fetch weather data" aria-busy="true" aria-live="polite">
+        {{ isLoading ? 'Fetching...' : 'Get Weather' }}
       </button>
+    </div>
+
+    <div v-if="error" role="alert" class="text-red-600">
+      {{ error.message }}
     </div>
 
     <WeatherCard v-if="weather" :weather="weather" />
@@ -30,9 +34,16 @@ import type { Weather } from "@/domain/entities/Weather";
 
 const selectedLocation = ref<Location | null>(HARDCODED_LOCATIONS[0]);
 const weather = ref<Weather | null>(null);
+const isLoading = ref<boolean>(false)
+const error = ref<Error | null>(null)
 
 const fetchWeather = () => {
-  if (!selectedLocation.value) return;
+  if (!selectedLocation.value) {
+    error.value = new Error('No location selected');
+    return;
+  }
+
+  isLoading.value = true
 
   weather.value = {
     location: selectedLocation.value,
@@ -42,5 +53,7 @@ const fetchWeather = () => {
     description: "Partly Cloudy",
     date: new Date(),
   };
+
+  isLoading.value = false
 };
 </script>
