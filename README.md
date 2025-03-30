@@ -96,8 +96,12 @@ Decided to go with a pre determined list of locations to explore.
 
 Also, considered some properties for now such as temperature, humidity and wind speed.
 
-We're starting by defining the presentation layer and then we'll progressively implement the other layers. Presentation layer already depends on domain though, so we'll already add some entities.
+Starting by defining the presentation layer and then will progressively implement the other layers. Presentation layer already depends on domain though, so I'll already add some entities.
 
 For entities, we can immediately recognize Weather and Location as the 2 main ingredients for the purpose of the exercise.
 
 As for the presentation, we'll have to use types obviously. In case of WeatherCard we need to type the properties. As this is a simple app, I'd usually leave the type inside the component itself, as the code doesn't get cluttered. However, as the app grows, it is a good practice to keep the types in a separate file, adjacent to the component, with the extension .types.ts
+
+Entities for now have only the types of the represented entity. Entites can however have more than that, like specific validations to fields, or enforce correct creation of elements. e.g. a possibility would be to have Location entity creating readonly objects that represent the location itself as these are immutable.
+
+Class based development works very well in some of these concepts, like setting entities, however due to the simplicity of the code so far, will do functional based code.
