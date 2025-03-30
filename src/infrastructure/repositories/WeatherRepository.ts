@@ -1,15 +1,10 @@
 import type { Weather } from "@/domain/entities/Weather";
 import type { Location } from "@/domain/entities/Location";
+import { LocationRepository } from "./LocationRepository";
 
 const HARDCODED_WEATHER_DATA: Weather[] = [
   {
-    location: {
-      id: "lisbon",
-      name: "Lisbon",
-      country: "Portugal",
-      latitude: 38.7169,
-      longitude: -9.1399,
-    },
+    location: LocationRepository.getLocationById('lisbon')!,
     temperature: 22,
     humidity: 60,
     windSpeed: 15,
@@ -17,13 +12,7 @@ const HARDCODED_WEATHER_DATA: Weather[] = [
     date: new Date("2025-03-30T12:00:00Z"),
   },
   {
-    location: {
-      id: "funchal",
-      name: "Funchal",
-      country: "Portugal",
-      latitude: 32.6496,
-      longitude: -16.9086,
-    },
+    location: LocationRepository.getLocationById('funchal')!,
     temperature: 18,
     humidity: 70,
     windSpeed: 10,
