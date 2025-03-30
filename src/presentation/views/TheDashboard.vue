@@ -18,8 +18,8 @@
       </button>
     </div>
 
-    <div v-if="error" role="alert" class="text-red-600">
-      {{ error.message }}
+    <div v-if="errorMessage" role="alert" class="text-red-600">
+      {{ errorMessage }}
     </div>
 
     <WeatherCard v-if="weather" :weather="weather" />
@@ -37,52 +37,54 @@ import type { Location } from "@/domain/entities/Location";
 import WeatherCard from "@/presentation/components/WeatherCard.vue";
 
 // logic
-import { WeatherRepository } from "@/infrastructure/repositories/WeatherRepository"; // Import repository
-import { LocationRepository } from "@/infrastructure/repositories/LocationRepository"; // Import repository
+import { getLocations } from "@/application/services/LocationService"; // Import repository
+import { getCurrentWeather } from "@/application/services/WeatherService"; // Import repository
 
 const locations = ref<Location[]>([]);
 const selectedLocation = ref<Location | null>(null);
 const weather = ref<Weather | null>(null);
 const isLoading = ref<boolean>(false);
-const error = ref<string | null>(null);
+const errorMessage = ref<string | null>(null);
 
 const fetchLocations = async () => {
   try {
-    const result = await LocationRepository.fetchLocations();
+    const result = await getLocations();
     locations.value = result;
     selectedLocation.value = result[0] || null; // Default to the first location if available
   } catch (err) {
     console.error("Error fetching locations:", err);
-    error.value = "Failed to load locations. Please try again later.";
+    errorMessage.value = "Failed to load locations. Please try again later.";
   }
 };
 
 const fetchWeather = async () => {
-  weather.value = null
+  weather.value = null;
 
   if (!selectedLocation.value) {
-    error.value = "No location selected.";
+    errorMessage.value = "No location selected.";
     return;
   }
 
   isLoading.value = true;
-  error.value = null;
 
   try {
-    const result = await WeatherRepository.fetchCurrentWeather(selectedLocation.value);
+    const result = await getCurrentWeather(selectedLocation.value);
 
     if (!result) {
-      throw new Error("No weather data available for this location.");
+      errorMessage.value = "No weather data available for this location.";
+      return;
     }
 
     weather.value = result;
   } catch (err) {
     console.error("Error fetching weather:", err);
-    error.value = (err as Error).message || "An unexpected error occurred.";
+    errorMessage.value =
+      (err as Error).message || "An unexpected error occurred while fetching weather.";
   } finally {
     isLoading.value = false;
   }
 };
+
 
 onBeforeMount(fetchLocations);
 </script>
