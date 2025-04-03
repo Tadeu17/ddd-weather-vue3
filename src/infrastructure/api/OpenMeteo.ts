@@ -49,9 +49,6 @@ export async function fetchWeatherHistoryAndForecast(location: Location, date: D
 
     const data = await response.json();
 
-    console.log('@@@@my data ', data);
-
-
     return data.daily.time.map((time: string, i: number) => ({
       location,
       temperature: data.daily.temperature_2m_max[i],
