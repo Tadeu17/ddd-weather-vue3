@@ -1,42 +1,33 @@
 import type { Weather } from "@/domain/entities/Weather";
 import type { Location } from "@/domain/entities/Location";
-import { LocationRepository } from "./LocationRepository";
 
 import { fetchCurrentWeather as fetchOpenMeteoCurrentWeather } from '@/infrastructure/api/OpenMeteo';
-
-const HARDCODED_WEATHER_DATA: Weather[] = [
-  {
-    location: LocationRepository.getLocationById('lisbon')!,
-    temperature: 22,
-    humidity: 60,
-    windSpeed: 15,
-    description: "Sunny",
-    date: new Date("2025-03-30T12:00:00Z"),
-  },
-  {
-    location: LocationRepository.getLocationById('funchal')!,
-    temperature: 18,
-    humidity: 70,
-    windSpeed: 10,
-    description: "Cloudy",
-    date: new Date("2025-03-30T12:00:00Z"),
-  },
-];
+import { fetchWeatherHistoryAndForecast as fetchOpenMeteoRageWeather } from '@/infrastructure/api/OpenMeteo';
+import { mapCurrentWeatherResponse, mapRangeWeatherResponse } from '@/infrastructure/api/OpenMeteo.transform'
+import type { OpenMeteoCurrentWeatherResponse, OpenMeteoRangeWeatherResponse } from '@/infrastructure/api/OpenMeteo.transform'
 
 export const WeatherRepository = {
   async fetchCurrentWeather(location: Location): Promise<Weather | null> {
     try {
-      return await fetchOpenMeteoCurrentWeather(location);
+      const data: OpenMeteoCurrentWeatherResponse = await fetchOpenMeteoCurrentWeather(location);
+
+      return mapCurrentWeatherResponse(data)
     } catch (error) {
       console.error('WeatherRepository error:', error);
       return null;
     }
   },
 
-  async fetchHistoricalWeather(location: Location, dateStart: Date, dateEnd: Date): Promise<Weather | null> {
-    await new Promise((resolve) => setTimeout(resolve, 500));
+  async fetchRangeWeather(location: Location, date: Date): Promise<Weather[] | null> {
+    try {
+      const data: OpenMeteoRangeWeatherResponse[] = await fetchOpenMeteoRageWeather(location, date);
 
-
-    return HARDCODED_WEATHER_DATA.find((weather) => weather.location.id === location.id) || null;
+      return data.map((weather) =>
+        (mapRangeWeatherResponse(weather))
+      )
+    } catch (error) {
+      console.error('WeatherRepository error:', error);
+      return null;
+    }
   },
 };

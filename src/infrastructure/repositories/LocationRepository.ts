@@ -1,4 +1,3 @@
-// src/infrastructure/repositories/LocationRepository.ts
 import type { Location } from "@/domain/entities/Location";
 
 const locations: Location[] = [

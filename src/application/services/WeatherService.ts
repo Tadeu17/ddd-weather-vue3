@@ -17,28 +17,11 @@ export const getCurrentWeather = async (location: Location): Promise<Weather | n
   }
 };
 
-export const getHistoricalWeather = async (location: Location, dateEnd: Date): Promise<Weather | null> => {
-  const dateStart = new Date(dateEnd);
-  dateStart.setDate(dateEnd.getDate() - 7);
-
+export const get7daysBeforeAndAfterWeather = async (location: Location): Promise<Weather[] | null> => {
   try {
-
-    return await WeatherRepository.fetchHistoricalWeather(location, dateStart, dateEnd);
+    return await WeatherRepository.fetchRangeWeather(location, new Date()); // we get the range considering today as the anchor date
   } catch (error) {
-    console.error("Error fetching historical weather:", error);
-    return null;
-  }
-};
-
-export const getForecastedWeather = async (location: Location, dateStart: Date): Promise<Weather | null> => {
-  const dateEnd = new Date(dateStart);
-  dateEnd.setDate(dateEnd.getDate() + 7);
-
-  try {
-
-    return await WeatherRepository.fetchHistoricalWeather(location, dateStart, dateEnd);
-  } catch (error) {
-    console.error("Error fetching historical weather:", error);
+    console.error("Error fetching range weather:", error);
     return null;
   }
 };

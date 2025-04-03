@@ -22,7 +22,11 @@
       {{ errorMessage }}
     </div>
 
-    <WeatherCard v-if="weather" :weather="weather" />
+    <div v-if="weatherRange && weatherRange.length > 0" class="flex flex-wrap gap-3">
+      <WeatherCard v-for="weather in weatherRange" :key="weather.date.toString()" :weather="weather" class="grow-0 w-36"
+        :class="isToday(weather.date) ? 'bg-blue-200' : 'bg-gray-50'">
+      </WeatherCard>
+    </div>
   </div>
 </template>
 
@@ -38,13 +42,22 @@ import WeatherCard from "@/presentation/components/WeatherCard.vue";
 
 // logic
 import { getLocations } from "@/application/services/LocationService"; // Import repository
-import { getCurrentWeather } from "@/application/services/WeatherService"; // Import repository
+import { get7daysBeforeAndAfterWeather } from "@/application/services/WeatherService"; // Import repository
 
+// highlight today's date
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const isToday = (date: Date): boolean => {
+  const givenDate = new Date(date);
+  givenDate.setHours(0, 0, 0, 0); // Remove time part
+  return givenDate.getTime() === today.getTime();
+};
+
+
+// location
 const locations = ref<Location[]>([]);
 const selectedLocation = ref<Location | null>(null);
-const weather = ref<Weather | null>(null);
-const isLoading = ref<boolean>(false);
-const errorMessage = ref<string | null>(null);
 
 const fetchLocations = async () => {
   try {
@@ -62,8 +75,14 @@ const fetchLocations = async () => {
   }
 };
 
+
+// weather
+const weatherRange = ref<Weather[] | null>(null)
+const isLoading = ref<boolean>(false);
+const errorMessage = ref<string | null>(null);
+
 const fetchWeather = async () => {
-  weather.value = null;
+  weatherRange.value = null
 
   if (!selectedLocation.value) {
     errorMessage.value = "No location selected.";
@@ -73,14 +92,14 @@ const fetchWeather = async () => {
   isLoading.value = true;
 
   try {
-    const result = await getCurrentWeather(selectedLocation.value);
+    const result = await get7daysBeforeAndAfterWeather(selectedLocation.value);
 
     if (!result) {
       errorMessage.value = "No weather data available for this location.";
       return;
     }
 
-    weather.value = result;
+    weatherRange.value = result;
   } catch (err) {
     console.error("Error fetching weather:", err);
     errorMessage.value = "An unexpected error occurred while fetching weather.";
