@@ -1,4 +1,4 @@
-const formatter = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium", timeStyle: "short" })
+const formatter = new Intl.DateTimeFormat("en-GB", { dateStyle: "medium" })
 
 
 export function formatDate(date: Date): string {

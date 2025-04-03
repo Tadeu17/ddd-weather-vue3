@@ -1,12 +1,12 @@
 <template>
-  <div class="p-4 rounded shadow-md border">
-    <h3>
+  <article class="p-4 rounded shadow-md border">
+    <h3 class="text-xl">
       <strong>{{ formattedDate }}</strong>
     </h3>
     <p class="text-gray-700">Temperature: <strong>{{ weather.temperature }}°C</strong></p>
     <p class="text-gray-700">Wind Speed: <strong>{{ weather.windSpeed }} km/h</strong></p>
     <p class="text-gray-700">Condition: <strong>{{ weather.description }}</strong></p>
-  </div>
+  </article>
 </template>
 
 <script setup lang="ts">

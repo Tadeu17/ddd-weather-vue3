@@ -23,7 +23,7 @@
     </div>
 
     <div v-if="weatherRange && weatherRange.length > 0" class="flex flex-wrap gap-3">
-      <WeatherCard v-for="weather in weatherRange" :key="weather.date.toString()" :weather="weather" class="grow-0 w-36"
+      <WeatherCard v-for="weather in weatherRange" :key="weather.date.toString()" :weather="weather" class="grow-0 w-40"
         :class="isToday(weather.date) ? 'bg-blue-200' : 'bg-gray-50'">
       </WeatherCard>
     </div>
