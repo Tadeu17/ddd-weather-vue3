@@ -105,3 +105,9 @@ As for the presentation, we'll have to use types obviously. In case of WeatherCa
 Entities for now have only the types of the represented entity. Entites can however have more than that, like specific validations to fields, or enforce correct creation of elements. e.g. a possibility would be to have Location entity creating readonly objects that represent the location itself as these are immutable.
 
 Class based development works very well in some of these concepts, like setting entities, however due to the simplicity of the code so far, will do functional based code.
+
+Changed the code in order to have a range of weathers, from -7 days to +7 days.
+
+Adjusted testing to all this.
+
+Decided to go with testing files next to the file they are testing as personally I like to have everything that concerns the topic close together. Basically, an approach similar to composition API where we aggregate the relevant points together
