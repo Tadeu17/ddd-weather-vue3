@@ -1,0 +1,10 @@
+// Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
+
+exports[`WeatherCard Component > should match snapshot 1`] = `
+"<article class="p-4 rounded shadow-md border">
+  <h3 class="text-xl"><strong>Mocked Date</strong></h3>
+  <p class="text-gray-700">Temperature: <strong>25°C</strong></p>
+  <p class="text-gray-700">Wind Speed: <strong>10 km/h</strong></p>
+  <p class="text-gray-700">Condition: <strong>Clear sky</strong></p>
+</article>"
+`;

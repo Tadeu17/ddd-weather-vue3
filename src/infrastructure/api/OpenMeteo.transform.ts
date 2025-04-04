@@ -17,6 +17,11 @@ export interface OpenMeteoRangeWeatherResponse {
   date: Date
 }
 
+/**
+ *
+ * @param data The type is supposed to simulate what we're expecting from the backend
+ * @returns returns an object prepared for the frontend environment, decoupling backend variables from FE variables
+ */
 export const mapCurrentWeatherResponse = (data: OpenMeteoCurrentWeatherResponse): Weather => {
   return {
     temperature: data.current_weather.temperature,
@@ -26,6 +31,11 @@ export const mapCurrentWeatherResponse = (data: OpenMeteoCurrentWeatherResponse)
   };
 };
 
+/**
+ *
+ * @param data The type is supposed to simulate what we're expecting from the backend
+ * @returns returns an object prepared for the frontend environment, decoupling backend variables from FE variables
+ */
 export const mapRangeWeatherResponse = (data: OpenMeteoRangeWeatherResponse): Weather => {
   return {
     temperature: data.temperature,
@@ -35,6 +45,11 @@ export const mapRangeWeatherResponse = (data: OpenMeteoRangeWeatherResponse): We
   }
 }
 
+/**
+ *
+ * @param weatherCode it's a code standard defined by world meteo organizations
+ * @returns we return a readable string that represents the weather code
+ */
 const getWeatherDescription = (weatherCode: number): string => {
   const weatherMap: Record<number, string> = {
     0: "Clear sky",
